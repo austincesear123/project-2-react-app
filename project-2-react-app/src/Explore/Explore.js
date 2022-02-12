@@ -6,6 +6,7 @@ const Explore = ({
 }) => {
   return (
     <>
+      <h1>Explore</h1>
       <form onSubmit={handleSubmit}>
         <input
           id="artistSearch"

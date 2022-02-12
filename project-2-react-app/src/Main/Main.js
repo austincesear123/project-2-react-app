@@ -3,7 +3,14 @@ import Dashboard from "../Dashboard/Dashboard";
 import Explore from "../Explore/Explore";
 import TLTList from "../TLTList/TLTList";
 
-const Main = ({ searchQuery, displaySearchResults, handleChange, handleSubmit }) => {
+const Main = ({
+  searchQuery,
+  displaySearchResults,
+  displayList,
+  handleChange,
+  handleSubmit,
+  setListDisplayToggle,
+}) => {
   return (
     <main>
       <Routes>
@@ -20,7 +27,15 @@ const Main = ({ searchQuery, displaySearchResults, handleChange, handleSubmit })
             />
           }
         />
-        <Route path="/tlt-list" element={<TLTList />} />
+        <Route
+          path="/tlt-list"
+          element={
+            <TLTList
+              displayList={displayList}
+              setListDisplayToggle={setListDisplayToggle}
+            />
+          }
+        />
       </Routes>
     </main>
   );

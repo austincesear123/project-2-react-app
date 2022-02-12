@@ -13,6 +13,10 @@ function App() {
   });
   const [dataFromSearch, setDataFromSearch] = useState([]);
 
+  const [tltList, setTLTlist] = useState([]);
+  const [ltList, setLTList] = useState([]);
+  const [listDisplayToggle, setListDisplayToggle] = useState("tlt");
+
   function handleChange(event) {
     if (event.target.id === "artistSearch") {
       setSearchQuery({ ...searchQuery, artist: event.target.value });
@@ -59,9 +63,57 @@ function App() {
       .catch((error) => console.log(error));
   }
 
+  function addToTLTList(title, thumb) {
+    const tltListCopy = [...tltList];
+    const releaseToAdd = { title: title, thumb: thumb };
+    tltListCopy.push(releaseToAdd);
+    setTLTlist(tltListCopy);
+    window.alert("Added to list");
+  }
+
+  function addToLTList(title, thumb, index) {
+    const tltListCopy = [...tltList];
+    tltListCopy.splice(index, 1);
+    setTLTlist(tltListCopy);
+    const ltListCopy = [...ltList];
+    const releaseToAdd = { title: title, thumb: thumb };
+    ltListCopy.push(releaseToAdd);
+    setLTList(ltListCopy);
+  }
+
   const displaySearchResults = dataFromSearch.map((result, index) => (
-    <li key={index}>{result.title}</li>
+    <li key={index}>
+      <img src={result.thumb} alt="thumbnail" />
+      {result.title}
+      <button onClick={() => addToTLTList(result.title, result.thumb)}>
+        Add to List
+      </button>
+    </li>
   ));
+
+  const displayTLTList = tltList.map((release, index) => (
+    <li key={index}>
+      <img src={release.thumb} alt="thumbnail" />
+      {release.title}
+      <button onClick={() => addToLTList(release.title, release.thumb, index)}>
+        Listened To
+      </button>
+    </li>
+  ));
+
+  const displayLTList = ltList.map((release, index) => (
+    <li key={index}>
+      <img src={release.thumb} alt="thumbnail" />
+      {release.title}
+    </li>
+  ));
+
+  let displayList;
+  if (listDisplayToggle === "tlt") {
+    displayList = displayTLTList;
+  } else {
+    displayList = displayLTList;
+  }
 
   return (
     <div className="App">
@@ -69,8 +121,10 @@ function App() {
       <Main
         searchQuery={searchQuery}
         displaySearchResults={displaySearchResults}
+        displayList={displayList}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
+        setListDisplayToggle={setListDisplayToggle}
       />
     </div>
   );
