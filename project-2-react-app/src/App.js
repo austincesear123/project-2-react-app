@@ -14,6 +14,7 @@ function App() {
   const [dataFromSearch, setDataFromSearch] = useState([]);
   const [dataForTracklist, setDataForTracklist] = useState([]);
   const [tracklistDisplayToggle, setTracklistDisplayToggle] = useState(false);
+  const [displayIndex, setDisplayIndex] = useState("");
 
   const [tltList, setTLTlist] = useState([]);
   const [ltList, setLTList] = useState([]);
@@ -90,12 +91,14 @@ function App() {
       .catch((error) => console.log(error));
   }
 
-  function toggleTracklistDisplay(url) {
+  function toggleTracklistDisplay(url, index) {
     if (tracklistDisplayToggle) {
       setTracklistDisplayToggle(false);
+      setDisplayIndex("")
     } else {
       setTracklistDisplayToggle(true);
       fetchTracklist(url);
+      setDisplayIndex(index);
     }
   }
 
@@ -103,7 +106,7 @@ function App() {
   if (tracklistDisplayToggle) {
     displayTracklist = dataForTracklist.map((track, index) => (
       <li key={index}>{track.title}</li>
-    ))
+    ));
   }
 
   const displaySearchResults = dataFromSearch.map((result, index) => (
@@ -115,10 +118,14 @@ function App() {
         <li>Year: {result.year}</li>
         <li>Style: {result.style[0]}</li>
       </ul>
-      {displayTracklist}
-      <button onClick={() => toggleTracklistDisplay(result.resource_url)}>
-        Display Tracklist
+      <button
+        onClick={() => toggleTracklistDisplay(result.resource_url, index)}
+      >
+        {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
       </button>
+      <ul className={displayIndex === index ? "active" : "inactive"}>
+        {displayTracklist}
+      </ul>
       <button onClick={() => addToTLTList(result.title, result.thumb)}>
         Add to List
       </button>
