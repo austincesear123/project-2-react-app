@@ -12,6 +12,8 @@ function App() {
     genre: "",
   });
   const [dataFromSearch, setDataFromSearch] = useState([]);
+  const [dataForTracklist, setDataForTracklist] = useState([]);
+  const [tracklistDisplayToggle, setTracklistDisplayToggle] = useState(false);
 
   const [tltList, setTLTlist] = useState([]);
   const [ltList, setLTList] = useState([]);
@@ -31,19 +33,19 @@ function App() {
     if (obj.artist !== "") {
       if (obj.album !== "") {
         if (obj.genre !== "") {
-          return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&genre=${obj.genre}&token=${discogsToken}`;
+          return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&genre=${obj.genre}&per_page=20&token=${discogsToken}`;
         }
       } else {
-        return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&token=${discogsToken}`;
+        return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&per_page=20&token=${discogsToken}`;
       }
-      return `https://api.discogs.com/database/search?artist=${obj.artist}&token=${discogsToken}`;
+      return `https://api.discogs.com/database/search?artist=${obj.artist}&per_page=20&token=${discogsToken}`;
     } else if (obj.album !== "") {
       if (obj.genre !== "") {
-        return `https://api.discogs.com/database/search?release_title=${obj.album}&genre=${obj.genre}&token=${discogsToken}`;
+        return `https://api.discogs.com/database/search?release_title=${obj.album}&genre=${obj.genre}&per_page=20&token=${discogsToken}`;
       }
-      return `https://api.discogs.com/database/search?release_title=${obj.album}&token=${discogsToken}`;
+      return `https://api.discogs.com/database/search?release_title=${obj.album}&per_page=20&token=${discogsToken}`;
     } else if (obj.genre !== "") {
-      return `https://api.discogs.com/database/search?style=${obj.genre}&token=${discogsToken}`;
+      return `https://api.discogs.com/database/search?style=${obj.genre}&per_page=20&token=${discogsToken}`;
     }
   };
 
@@ -81,10 +83,42 @@ function App() {
     setLTList(ltListCopy);
   }
 
+  function fetchTracklist(url) {
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => setDataForTracklist(data.tracklist))
+      .catch((error) => console.log(error));
+  }
+
+  function toggleTracklistDisplay(url) {
+    if (tracklistDisplayToggle) {
+      setTracklistDisplayToggle(false);
+    } else {
+      setTracklistDisplayToggle(true);
+      fetchTracklist(url);
+    }
+  }
+
+  let displayTracklist;
+  if (tracklistDisplayToggle) {
+    displayTracklist = dataForTracklist.map((track, index) => (
+      <li key={index}>{track.title}</li>
+    ))
+  }
+
   const displaySearchResults = dataFromSearch.map((result, index) => (
     <li key={index}>
       <img src={result.thumb} alt="thumbnail" />
       {result.title}
+      <ul>
+        <li>Label: {result.label[0]}</li>
+        <li>Year: {result.year}</li>
+        <li>Style: {result.style[0]}</li>
+      </ul>
+      {displayTracklist}
+      <button onClick={() => toggleTracklistDisplay(result.resource_url)}>
+        Display Tracklist
+      </button>
       <button onClick={() => addToTLTList(result.title, result.thumb)}>
         Add to List
       </button>
