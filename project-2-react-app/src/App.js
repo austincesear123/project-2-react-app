@@ -66,23 +66,30 @@ function App() {
       .catch((error) => console.log(error));
   }
 
-  function addToTLTList(title, thumb) {
+  function addToTLTList(title, thumb, url) {
     const tltListCopy = [...tltList];
-    const releaseToAdd = { title: title, thumb: thumb };
+    const releaseToAdd = { title: title, thumb: thumb, url: url };
     tltListCopy.push(releaseToAdd);
     setTLTlist(tltListCopy);
     window.alert("Added to list");
   }
 
-  function addToLTList(title, thumb, index) {
+  function addToLTList(title, thumb, url, index) {
     const tltListCopy = [...tltList];
     tltListCopy.splice(index, 1);
     setTLTlist(tltListCopy);
     const ltListCopy = [...ltList];
-    const releaseToAdd = { title: title, thumb: thumb };
+    const releaseToAdd = { title: title, thumb: thumb, url: url };
     ltListCopy.push(releaseToAdd);
     setLTList(ltListCopy);
   }
+
+  // function pushTracklistData(tracklist) {
+  //   console.log(tracklist);
+  //   const dataForTracklistCopy = [...dataForTracklist];
+  //   dataForTracklistCopy.push(tracklist);
+  //   setDataForTracklist(dataForTracklistCopy);
+  // }
 
   function fetchTracklist(url) {
     fetch(url)
@@ -94,7 +101,8 @@ function App() {
   function toggleTracklistDisplay(url, index) {
     if (tracklistDisplayToggle) {
       setTracklistDisplayToggle(false);
-      setDisplayIndex("")
+      setDisplayIndex("");
+      setDataForTracklist([]);
     } else {
       setTracklistDisplayToggle(true);
       fetchTracklist(url);
@@ -123,10 +131,14 @@ function App() {
       >
         {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
       </button>
-      <ul className={displayIndex === index ? "active" : "inactive"}>
+      <ol className={displayIndex === index ? "active" : "inactive"}>
         {displayTracklist}
-      </ul>
-      <button onClick={() => addToTLTList(result.title, result.thumb)}>
+      </ol>
+      <button
+        onClick={() =>
+          addToTLTList(result.title, result.thumb, result.resource_url)
+        }
+      >
         Add to List
       </button>
     </li>
@@ -136,7 +148,13 @@ function App() {
     <li key={index}>
       <img src={release.thumb} alt="thumbnail" />
       {release.title}
-      <button onClick={() => addToLTList(release.title, release.thumb, index)}>
+      <button onClick={() => toggleTracklistDisplay(release.url, index)}>
+        {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
+      </button>
+      <ol className={displayIndex === index ? "active" : "inactive"}>
+        {displayTracklist}
+      </ol>
+      <button onClick={() => addToLTList(release.title, release.thumb, release.url, index)}>
         Listened To
       </button>
     </li>
@@ -146,6 +164,12 @@ function App() {
     <li key={index}>
       <img src={release.thumb} alt="thumbnail" />
       {release.title}
+      <button onClick={() => toggleTracklistDisplay(release.url, index)}>
+        {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
+      </button>
+      <ol className={displayIndex === index ? "active" : "inactive"}>
+        {displayTracklist}
+      </ol>
     </li>
   ));
 
