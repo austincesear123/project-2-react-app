@@ -36,19 +36,19 @@ function App() {
     if (obj.artist !== "") {
       if (obj.album !== "") {
         if (obj.genre !== "") {
-          return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&genre=${obj.genre}&per_page=20&token=${discogsToken}`;
+          return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&genre=${obj.genre}&format=album&per_page=20&token=${discogsToken}`;
         }
       } else {
-        return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&per_page=20&token=${discogsToken}`;
+        return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&format=album&per_page=20&token=${discogsToken}`;
       }
-      return `https://api.discogs.com/database/search?artist=${obj.artist}&per_page=20&token=${discogsToken}`;
+      return `https://api.discogs.com/database/search?artist=${obj.artist}&format=album&token=${discogsToken}`;
     } else if (obj.album !== "") {
       if (obj.genre !== "") {
-        return `https://api.discogs.com/database/search?release_title=${obj.album}&genre=${obj.genre}&per_page=20&token=${discogsToken}`;
+        return `https://api.discogs.com/database/search?release_title=${obj.album}&genre=${obj.genre}&format=album&per_page=20&token=${discogsToken}`;
       }
-      return `https://api.discogs.com/database/search?release_title=${obj.album}&per_page=20&token=${discogsToken}`;
+      return `https://api.discogs.com/database/search?release_title=${obj.album}&format=album&per_page=20&token=${discogsToken}`;
     } else if (obj.genre !== "") {
-      return `https://api.discogs.com/database/search?style=${obj.genre}&per_page=20&token=${discogsToken}`;
+      return `https://api.discogs.com/database/search?style=${obj.genre}&format=album&per_page=20&token=${discogsToken}`;
     }
   };
 
@@ -67,6 +67,8 @@ function App() {
       )
       .catch((error) => console.log(error));
   }
+
+  function handleNextPageFetch() {}
 
   function addToTLTList(title, thumb, url, style) {
     const tltListCopy = [...tltList];
@@ -129,7 +131,8 @@ function App() {
     exploreListForDashboard = dataForDashboardExplore.map((release, index) => (
       <li key={index}>
         <img src={release.thumb} alt="thumbnail" />
-        {release.title}</li>
+        {release.title}
+      </li>
     ));
   }
 
@@ -220,7 +223,7 @@ function App() {
 
   return (
     <div className="App">
-      <Navbar />
+      <Navbar setListDisplayToggle={setListDisplayToggle} />
       <Main
         searchQuery={searchQuery}
         displaySearchResults={displaySearchResults}
