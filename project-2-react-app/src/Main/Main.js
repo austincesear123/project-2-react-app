@@ -7,6 +7,8 @@ const Main = ({
   searchQuery,
   displaySearchResults,
   displayList,
+  displayTLTList,
+  exploreListForDashboard,
   handleChange,
   handleSubmit,
   setListDisplayToggle,
@@ -14,7 +16,7 @@ const Main = ({
   return (
     <main>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Dashboard displayTLTList={displayTLTList} exploreListForDashboard={exploreListForDashboard} />} />
         <Route path="/home" element={<Navigate to="/" />} />
         <Route
           path="/explore"

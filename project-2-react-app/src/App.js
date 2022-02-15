@@ -16,6 +16,8 @@ function App() {
   const [tracklistDisplayToggle, setTracklistDisplayToggle] = useState(false);
   const [displayIndex, setDisplayIndex] = useState("");
 
+  const [dataForDashboardExplore, setDataForDashboardExplore] = useState([]);
+
   const [tltList, setTLTlist] = useState([]);
   const [ltList, setLTList] = useState([]);
   const [listDisplayToggle, setListDisplayToggle] = useState("tlt");
@@ -66,26 +68,25 @@ function App() {
       .catch((error) => console.log(error));
   }
 
-  function addToTLTList(title, thumb, url) {
+  function addToTLTList(title, thumb, url, style) {
     const tltListCopy = [...tltList];
-    const releaseToAdd = { title: title, thumb: thumb, url: url };
+    const releaseToAdd = { title: title, thumb: thumb, url: url, style: style };
     tltListCopy.push(releaseToAdd);
     setTLTlist(tltListCopy);
     window.alert("Added to list");
   }
 
-  function addToLTList(title, thumb, url, index) {
+  function addToLTList(title, thumb, url, style, index) {
     const tltListCopy = [...tltList];
     tltListCopy.splice(index, 1);
     setTLTlist(tltListCopy);
     const ltListCopy = [...ltList];
-    const releaseToAdd = { title: title, thumb: thumb, url: url };
-    ltListCopy.push(releaseToAdd);
+    const releaseToAdd = { title: title, thumb: thumb, url: url, style: style };
+    ltListCopy.unshift(releaseToAdd);
     setLTList(ltListCopy);
   }
 
   // function pushTracklistData(tracklist) {
-  //   console.log(tracklist);
   //   const dataForTracklistCopy = [...dataForTracklist];
   //   dataForTracklistCopy.push(tracklist);
   //   setDataForTracklist(dataForTracklistCopy);
@@ -108,6 +109,28 @@ function App() {
       fetchTracklist(url);
       setDisplayIndex(index);
     }
+  }
+
+  function fetchDashboardExploreList() {}
+
+  useEffect(() => {
+    if (ltList.length > 0) {
+      const style = ltList[0].style[0];
+      const url = `https://api.discogs.com/database/search?style=${style}&per_page=5&token=${discogsToken}`;
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => setDataForDashboardExplore(data.results))
+        .catch((error) => console.log(error));
+    }
+  }, [ltList[0]]);
+
+  let exploreListForDashboard;
+  if (ltList.length > 0) {
+    exploreListForDashboard = dataForDashboardExplore.map((release, index) => (
+      <li key={index}>
+        <img src={release.thumb} alt="thumbnail" />
+        {release.title}</li>
+    ));
   }
 
   let displayTracklist;
@@ -136,7 +159,12 @@ function App() {
       </ol>
       <button
         onClick={() =>
-          addToTLTList(result.title, result.thumb, result.resource_url)
+          addToTLTList(
+            result.title,
+            result.thumb,
+            result.resource_url,
+            result.style
+          )
         }
       >
         Add to List
@@ -154,7 +182,17 @@ function App() {
       <ol className={displayIndex === index ? "active" : "inactive"}>
         {displayTracklist}
       </ol>
-      <button onClick={() => addToLTList(release.title, release.thumb, release.url, index)}>
+      <button
+        onClick={() =>
+          addToLTList(
+            release.title,
+            release.thumb,
+            release.url,
+            release.style,
+            index
+          )
+        }
+      >
         Listened To
       </button>
     </li>
@@ -187,6 +225,8 @@ function App() {
         searchQuery={searchQuery}
         displaySearchResults={displaySearchResults}
         displayList={displayList}
+        displayTLTList={displayTLTList}
+        exploreListForDashboard={exploreListForDashboard}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         setListDisplayToggle={setListDisplayToggle}
