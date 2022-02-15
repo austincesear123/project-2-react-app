@@ -1,9 +1,18 @@
 const Explore = ({
   searchQuery,
+  dataForPagination,
   displaySearchResults,
   handleChange,
   handleSubmit,
+  handleNextPageFetch,
+  handleLastPageFetch
 }) => {
+  let nextAndLastPageButtons;
+  if(dataForPagination.page === 1){
+    nextAndLastPageButtons = <button onClick={handleNextPageFetch}>Next Page</button>
+  } else if(dataForPagination.page > 1){
+    nextAndLastPageButtons = <><button onClick={handleLastPageFetch}>Last Page</button><button onClick={handleNextPageFetch}>Next Page</button></>
+  }
   return (
     <>
       <h1>Explore</h1>
@@ -32,6 +41,7 @@ const Explore = ({
         <button>Search</button>
       </form>
       <ul>{displaySearchResults}</ul>
+      {nextAndLastPageButtons}
     </>
   );
 };

@@ -12,6 +12,7 @@ function App() {
     genre: "",
   });
   const [dataFromSearch, setDataFromSearch] = useState([]);
+  const [dataForPagination, setDataForPagination] = useState({});
   const [dataForTracklist, setDataForTracklist] = useState([]);
   const [tracklistDisplayToggle, setTracklistDisplayToggle] = useState(false);
   const [displayIndex, setDisplayIndex] = useState("");
@@ -57,7 +58,10 @@ function App() {
 
     fetch(determineSearchURL(searchQuery))
       .then((response) => response.json())
-      .then((data) => setDataFromSearch(data.results))
+      .then((data) => {
+        setDataFromSearch(data.results);
+        setDataForPagination(data.pagination);
+      })
       .then(() =>
         setSearchQuery({
           artist: "",
@@ -68,7 +72,29 @@ function App() {
       .catch((error) => console.log(error));
   }
 
-  function handleNextPageFetch() {}
+  function handleNextPageFetch() {
+    const url = dataForPagination.urls.next;
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        setDataFromSearch(data.results);
+        setDataForPagination(data.pagination);
+      })
+      .then(window.scrollTo(0,0))
+      .catch((error) => console.log(error));
+  }
+
+  function handleLastPageFetch() {
+    const url = dataForPagination.urls.prev;
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        setDataFromSearch(data.results);
+        setDataForPagination(data.pagination);
+      })
+      .then(window.scrollTo(0,0))
+      .catch((error) => console.log(error));
+  }
 
   function addToTLTList(title, thumb, url, style) {
     const tltListCopy = [...tltList];
@@ -112,8 +138,6 @@ function App() {
       setDisplayIndex(index);
     }
   }
-
-  function fetchDashboardExploreList() {}
 
   useEffect(() => {
     if (ltList.length > 0) {
@@ -226,12 +250,15 @@ function App() {
       <Navbar setListDisplayToggle={setListDisplayToggle} />
       <Main
         searchQuery={searchQuery}
+        dataForPagination={dataForPagination}
         displaySearchResults={displaySearchResults}
         displayList={displayList}
         displayTLTList={displayTLTList}
         exploreListForDashboard={exploreListForDashboard}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
+        handleNextPageFetch={handleNextPageFetch}
+        handleLastPageFetch={handleLastPageFetch}
         setListDisplayToggle={setListDisplayToggle}
       />
     </div>

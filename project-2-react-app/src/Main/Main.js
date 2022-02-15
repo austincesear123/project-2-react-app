@@ -5,12 +5,15 @@ import TLTList from "../TLTList/TLTList";
 
 const Main = ({
   searchQuery,
+  dataForPagination,
   displaySearchResults,
   displayList,
   displayTLTList,
   exploreListForDashboard,
   handleChange,
   handleSubmit,
+  handleNextPageFetch,
+  handleLastPageFetch,
   setListDisplayToggle,
 }) => {
   return (
@@ -22,9 +25,12 @@ const Main = ({
           path="/explore"
           element={
             <Explore
+              dataForPagination={dataForPagination}
               searchQuery={searchQuery}
               handleChange={handleChange}
               handleSubmit={handleSubmit}
+              handleNextPageFetch={handleNextPageFetch}
+              handleLastPageFetch={handleLastPageFetch}
               displaySearchResults={displaySearchResults}
             />
           }
