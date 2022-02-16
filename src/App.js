@@ -261,29 +261,73 @@ function App() {
 
   const displayTLTList = tltList.map((release, index) => (
     <li key={index}>
-      <img src={release.thumb} alt="thumbnail" />
-      {release.title}
-      <button onClick={() => toggleTracklistDisplay(index)}>
-        {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
-      </button>
-      <ol className={displayIndex === index ? "active" : "inactive"}>
-        {release.tracklist?.map((track, index) => (
-          <li key={index}>{track.title}</li>
-        ))}
-      </ol>
-      <button
-        onClick={() =>
-          addToLTList(
-            release.title,
-            release.thumb,
-            release.url,
-            release.style,
-            index
-          )
-        }
-      >
-        Listened To
-      </button>
+      <div className="row align-items-center">
+        <img className="col-4" src={release.thumb} alt="thumbnail" />
+        <div className="col-7">{release.title}</div>
+      </div>
+      <div className="row align-items-center">
+        <div className="col-6">
+          <button
+            type="button"
+            className="btn btn-secondary text-nowrap btn-sm"
+            onClick={() => toggleTracklistDisplay(index)}
+          >
+            {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
+          </button>
+        </div>
+        <div className="col-6">
+          <button
+            type="button"
+            className="btn btn-secondary text-nowrap btn-sm"
+            onClick={() =>
+              addToLTList(
+                release.title,
+                release.thumb,
+                release.url,
+                release.style,
+                index
+              )
+            }
+          >
+            Listened To
+          </button>
+        </div>
+        <div className="accordion" id="tracklist">
+          <div className="accordion-item">
+            <h2 className="accordion-header" id={`tracklist-header-${index}`}>
+              <button
+                className="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target={`#collapse${index}`}
+                aria-expanded="false"
+                aria-controls={`collapse${index}`}
+              >
+                Display Tracklist
+              </button>
+            </h2>
+            <div
+              id={`collapse${index}`}
+              className="accordion-collapse collapse"
+              aria-labelledby={`tracklist-header-${index}`}
+              data-bs-parent="#tracklist"
+            >
+              <div className="accordion-body">
+                <ol>
+                  {release.tracklist?.map((track, index) => (
+                    <li key={index}>{track.title}</li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* <ol className={displayIndex === index ? "active" : "inactive"}>
+          {release.tracklist?.map((track, index) => (
+            <li key={index}>{track.title}</li>
+          ))}
+        </ol> */}
+      </div>
     </li>
   ));
 
