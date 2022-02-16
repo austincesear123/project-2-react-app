@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import discogsToken from "./discogsToken";
 import Main from "./Main/Main";
 import Navbar from "./Navbar/Navbar";
+import { initialTLTList, initialLTList } from "./initialData";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState({
@@ -13,17 +14,14 @@ function App() {
   });
   const [dataFromSearch, setDataFromSearch] = useState([]);
   const [dataForPagination, setDataForPagination] = useState({});
-  const [dataForTracklist, setDataForTracklist] = useState([]);
+  const [tracklists, setTracklists] = useState([]);
   const [tracklistDisplayToggle, setTracklistDisplayToggle] = useState(false);
   const [displayIndex, setDisplayIndex] = useState("");
 
-  const [tracklists, setTracklists] = useState([]);
-  const [fullSearchData, setFullSearchData] = useState([]);
-
   const [dataForDashboardExplore, setDataForDashboardExplore] = useState([]);
 
-  const [tltList, setTLTlist] = useState([]);
-  const [ltList, setLTList] = useState([]);
+  const [tltList, setTLTlist] = useState(initialTLTList);
+  const [ltList, setLTList] = useState(initialLTList);
   const [listDisplayToggle, setListDisplayToggle] = useState("tlt");
 
   function handleChange(event) {
@@ -61,6 +59,39 @@ function App() {
     const tracklistsCopy = [];
 
     fetch(determineSearchURL(searchQuery))
+      .then((response) => response.json())
+      .then((data) => {
+        setDataFromSearch(data.results);
+        setDataForPagination(data.pagination);
+        return data;
+      })
+      .then((data) => {
+        data.results.forEach((e) => {
+          fetch(`${e.resource_url}?token=${discogsToken}`)
+            .then((response) => response.json())
+            .then((data) => {
+              tracklistsCopy.push(data.tracklist);
+            })
+            .catch((error) => console.log(error));
+        });
+      })
+      .then(() => setTracklists(tracklistsCopy))
+      .then(() =>
+        setSearchQuery({
+          artist: "",
+          album: "",
+          genre: "",
+        })
+      )
+      .catch((error) => console.log(error));
+  }
+
+  function handleExploreSeeMore() {
+    const style = ltList[0].style[0];
+    const url = `https://api.discogs.com/database/search?style=${style}&per_page=20&token=${discogsToken}`;
+    const tracklistsCopy = [];
+
+    fetch(url)
       .then((response) => response.json())
       .then((data) => {
         setDataFromSearch(data.results);
@@ -136,21 +167,12 @@ function App() {
   //   setDataForTracklist(dataForTracklistCopy);
   // }
 
-  function fetchTracklist(url) {
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => setDataForTracklist(data.tracklist))
-      .catch((error) => console.log(error));
-  }
-
-  function toggleTracklistDisplay(url, index) {
+  function toggleTracklistDisplay(index) {
     if (tracklistDisplayToggle) {
       setTracklistDisplayToggle(false);
       setDisplayIndex("");
-      setDataForTracklist([]);
     } else {
       setTracklistDisplayToggle(true);
-      fetchTracklist(url);
       setDisplayIndex(index);
     }
   }
@@ -214,12 +236,14 @@ function App() {
         <li>Year: {result.year}</li>
         <li>Style: {result.style[0]}</li>
       </ul>
-      <button
-        onClick={() => toggleTracklistDisplay(result.resource_url, index)}
-      >
+      <button onClick={() => toggleTracklistDisplay(index)}>
         {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
       </button>
-      <ol className={displayIndex === index ? "active" : "inactive"}>{tracklists[index]?.map((track, index) => (<li key={index}>{track.title}</li>))}</ol>
+      <ol className={displayIndex === index ? "active" : "inactive"}>
+        {tracklists[index]?.map((track, index) => (
+          <li key={index}>{track.title}</li>
+        ))}
+      </ol>
       <button
         onClick={() =>
           addToTLTList(
@@ -239,11 +263,13 @@ function App() {
     <li key={index}>
       <img src={release.thumb} alt="thumbnail" />
       {release.title}
-      <button onClick={() => toggleTracklistDisplay(release.url, index)}>
+      <button onClick={() => toggleTracklistDisplay(index)}>
         {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
       </button>
       <ol className={displayIndex === index ? "active" : "inactive"}>
-        {displayTracklist}
+        {release.tracklist?.map((track, index) => (
+          <li key={index}>{track.title}</li>
+        ))}
       </ol>
       <button
         onClick={() =>
@@ -265,11 +291,13 @@ function App() {
     <li key={index}>
       <img src={release.thumb} alt="thumbnail" />
       {release.title}
-      <button onClick={() => toggleTracklistDisplay(release.url, index)}>
+      <button onClick={() => toggleTracklistDisplay(index)}>
         {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
       </button>
       <ol className={displayIndex === index ? "active" : "inactive"}>
-        {displayTracklist}
+        {release.tracklist?.map((track, index) => (
+          <li key={index}>{track.title}</li>
+        ))}
       </ol>
     </li>
   ));
@@ -295,6 +323,7 @@ function App() {
         handleSubmit={handleSubmit}
         handleNextPageFetch={handleNextPageFetch}
         handleLastPageFetch={handleLastPageFetch}
+        handleExploreSeeMore={handleExploreSeeMore}
         setListDisplayToggle={setListDisplayToggle}
       />
     </div>

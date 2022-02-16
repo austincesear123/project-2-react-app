@@ -14,12 +14,13 @@ const Main = ({
   handleSubmit,
   handleNextPageFetch,
   handleLastPageFetch,
+  handleExploreSeeMore,
   setListDisplayToggle,
 }) => {
   return (
     <main>
       <Routes>
-        <Route path="/" element={<Dashboard displayTLTList={displayTLTList} exploreListForDashboard={exploreListForDashboard} />} />
+        <Route path="/" element={<Dashboard displayTLTList={displayTLTList} exploreListForDashboard={exploreListForDashboard} handleExploreSeeMore={handleExploreSeeMore} />} />
         <Route path="/home" element={<Navigate to="/" />} />
         <Route
           path="/explore"

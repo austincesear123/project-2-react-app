@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Dashboard = ({ displayTLTList, exploreListForDashboard }) => {
+const Dashboard = ({ displayTLTList, exploreListForDashboard, handleExploreSeeMore }) => {
   let slicedDisplayTLTList;
   if (displayTLTList.length > 5) {
     slicedDisplayTLTList = displayTLTList.slice(0, 5);
@@ -24,7 +24,7 @@ const Dashboard = ({ displayTLTList, exploreListForDashboard }) => {
       <article>
         <h2>Explore</h2>
         <ul>{exploreListForDashboard}</ul>
-        <Link to="/explore">
+        <Link to="/explore" onClick={handleExploreSeeMore}>
           <button>See More</button>
         </Link>
       </article>
