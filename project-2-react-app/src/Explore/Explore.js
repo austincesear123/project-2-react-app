@@ -8,11 +8,14 @@ const Explore = ({
   handleLastPageFetch
 }) => {
   let nextAndLastPageButtons;
-  if(dataForPagination.page === 1){
-    nextAndLastPageButtons = <button onClick={handleNextPageFetch}>Next Page</button>
-  } else if(dataForPagination.page > 1){
-    nextAndLastPageButtons = <><button onClick={handleLastPageFetch}>Last Page</button><button onClick={handleNextPageFetch}>Next Page</button></>
+  if(dataForPagination.pages > 1){
+    if(dataForPagination.page === 1){
+      nextAndLastPageButtons = <button onClick={handleNextPageFetch}>Next Page</button>
+    } else if(dataForPagination.page > 1){
+      nextAndLastPageButtons = <><button onClick={handleLastPageFetch}>Last Page</button><button onClick={handleNextPageFetch}>Next Page</button></>
+    }
   }
+
   return (
     <>
       <h1>Explore</h1>

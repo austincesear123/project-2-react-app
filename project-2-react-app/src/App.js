@@ -1,5 +1,5 @@
 import "./App.css";
-import { Route, Link, Routes, Navigate } from "react-router-dom";
+// import { Route, Link, Routes, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import discogsToken from "./discogsToken";
 import Main from "./Main/Main";
@@ -16,6 +16,9 @@ function App() {
   const [dataForTracklist, setDataForTracklist] = useState([]);
   const [tracklistDisplayToggle, setTracklistDisplayToggle] = useState(false);
   const [displayIndex, setDisplayIndex] = useState("");
+
+  const [tracklists, setTracklists] = useState([]);
+  const [fullSearchData, setFullSearchData] = useState([]);
 
   const [dataForDashboardExplore, setDataForDashboardExplore] = useState([]);
 
@@ -37,31 +40,44 @@ function App() {
     if (obj.artist !== "") {
       if (obj.album !== "") {
         if (obj.genre !== "") {
-          return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&genre=${obj.genre}&format=album&per_page=20&token=${discogsToken}`;
+          return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&genre=${obj.genre}&type=master&per_page=20&token=${discogsToken}`;
         }
       } else {
-        return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&format=album&per_page=20&token=${discogsToken}`;
+        return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&type=master&per_page=20&token=${discogsToken}`;
       }
-      return `https://api.discogs.com/database/search?artist=${obj.artist}&format=album&token=${discogsToken}`;
+      return `https://api.discogs.com/database/search?artist=${obj.artist}&type=master&token=${discogsToken}`;
     } else if (obj.album !== "") {
       if (obj.genre !== "") {
-        return `https://api.discogs.com/database/search?release_title=${obj.album}&genre=${obj.genre}&format=album&per_page=20&token=${discogsToken}`;
+        return `https://api.discogs.com/database/search?release_title=${obj.album}&genre=${obj.genre}&type=master&per_page=20&token=${discogsToken}`;
       }
-      return `https://api.discogs.com/database/search?release_title=${obj.album}&format=album&per_page=20&token=${discogsToken}`;
+      return `https://api.discogs.com/database/search?release_title=${obj.album}&type=master&per_page=20&token=${discogsToken}`;
     } else if (obj.genre !== "") {
-      return `https://api.discogs.com/database/search?style=${obj.genre}&format=album&per_page=20&token=${discogsToken}`;
+      return `https://api.discogs.com/database/search?style=${obj.genre}&type=master&per_page=20&token=${discogsToken}`;
     }
   };
 
   function handleSubmit(event) {
     event.preventDefault();
+    const tracklistsCopy = [];
 
     fetch(determineSearchURL(searchQuery))
       .then((response) => response.json())
       .then((data) => {
         setDataFromSearch(data.results);
         setDataForPagination(data.pagination);
+        return data;
       })
+      .then((data) => {
+        data.results.forEach((e) => {
+          fetch(`${e.resource_url}?token=${discogsToken}`)
+            .then((response) => response.json())
+            .then((data) => {
+              tracklistsCopy.push(data.tracklist);
+            })
+            .catch((error) => console.log(error));
+        });
+      })
+      .then(() => setTracklists(tracklistsCopy))
       .then(() =>
         setSearchQuery({
           artist: "",
@@ -80,7 +96,7 @@ function App() {
         setDataFromSearch(data.results);
         setDataForPagination(data.pagination);
       })
-      .then(window.scrollTo(0,0))
+      .then(window.scrollTo(0, 0))
       .catch((error) => console.log(error));
   }
 
@@ -92,7 +108,7 @@ function App() {
         setDataFromSearch(data.results);
         setDataForPagination(data.pagination);
       })
-      .then(window.scrollTo(0,0))
+      .then(window.scrollTo(0, 0))
       .catch((error) => console.log(error));
   }
 
@@ -161,11 +177,33 @@ function App() {
   }
 
   let displayTracklist;
-  if (tracklistDisplayToggle) {
-    displayTracklist = dataForTracklist.map((track, index) => (
-      <li key={index}>{track.title}</li>
-    ));
-  }
+  // if (tracklistDisplayToggle) {
+  //   displayTracklist = dataForTracklist.map((track, index) => (
+  //     <li key={index}>{track.title}</li>
+  //   ));
+  // }
+
+  // if (dataFromSearch.length > 0) {
+  //   let tracklistsAddedToSearchData = [...dataFromSearch];
+  //   dataFromSearch.forEach((result, index) => {
+  //     const dataToAdd = { ...result, tracklist: tracklists[index] };
+  //     tracklistsAddedToSearchData.splice(index, 1, dataToAdd);
+  //   });
+  //   setFullSearchData(tracklistsAddedToSearchData);
+  //   let mappedTracklists = [];
+  //   fullSearchData.forEach((result) => {
+  //     let mappedTracklist = result.tracklist?.map((track, index) => (
+  //       <li key={index}>{track.title}</li>
+  //     ));
+  //     mappedTracklists.push(mappedTracklist);
+  //   });
+  //   fullSearchData.forEach((result, index) => {
+  //     const dataToAdd = { ...result, tracklist: mappedTracklists[index] };
+  //     tracklistsAddedToSearchData.splice(index, 1, dataToAdd);
+  //   });
+  //   console.log(mappedTracklists);
+  //   setFullSearchData(tracklistsAddedToSearchData);
+  // }
 
   const displaySearchResults = dataFromSearch.map((result, index) => (
     <li key={index}>
@@ -181,9 +219,7 @@ function App() {
       >
         {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
       </button>
-      <ol className={displayIndex === index ? "active" : "inactive"}>
-        {displayTracklist}
-      </ol>
+      <ol className={displayIndex === index ? "active" : "inactive"}>{tracklists[index]?.map((track, index) => (<li key={index}>{track.title}</li>))}</ol>
       <button
         onClick={() =>
           addToTLTList(
