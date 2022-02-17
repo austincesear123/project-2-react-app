@@ -6,3 +6,39 @@
     text-align: center;
 } */
 
+.container {
+  padding: 0;
+}
+
+.card-body {
+  padding: 0;
+}
+
+.dashboard-cards {
+  width: 90%;
+  margin-bottom: 10px;
+}
+
+.sub-card {
+  width: 122.17px;
+  height: 50px;
+}
+
+.sub-card-title {
+  font-size: 0.70rem;
+}
+
+.dashboard-image {
+  max-height: 50px;
+  object-fit: scale-down;
+}
+
+.dashboard-explore-list {
+    font-size: 0.75rem;
+}
+
+.dashboard-explore-image {
+    max-height: 30px;
+    object-fit: scale-down;
+    margin-right: 5px;
+}

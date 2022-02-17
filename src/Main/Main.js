@@ -8,8 +8,8 @@ const Main = ({
   dataForPagination,
   displaySearchResults,
   displayList,
-  displayTLTList,
-  exploreListForDashboard,
+  displayDashboardTLTList,
+  displayDashboardExplore,
   handleChange,
   handleSubmit,
   handleNextPageFetch,
@@ -20,7 +20,7 @@ const Main = ({
   return (
     <main>
       <Routes>
-        <Route path="/" element={<Dashboard displayTLTList={displayTLTList} exploreListForDashboard={exploreListForDashboard} handleExploreSeeMore={handleExploreSeeMore} />} />
+        <Route path="/" element={<Dashboard displayDashboardTLTList={displayDashboardTLTList} displayDashboardExplore={displayDashboardExplore} handleExploreSeeMore={handleExploreSeeMore} />} />
         <Route path="/home" element={<Navigate to="/" />} />
         <Route
           path="/explore"

@@ -143,20 +143,30 @@ function App() {
       .catch((error) => console.log(error));
   }
 
-  function addToTLTList(title, thumb, url, style) {
+  function addToTLTList(title, cover_image, url, style) {
     const tltListCopy = [...tltList];
-    const releaseToAdd = { title: title, thumb: thumb, url: url, style: style };
+    const releaseToAdd = {
+      title: title,
+      cover_image: cover_image,
+      url: url,
+      style: style,
+    };
     tltListCopy.push(releaseToAdd);
     setTLTlist(tltListCopy);
     window.alert("Added to list");
   }
 
-  function addToLTList(title, thumb, url, style, index) {
+  function addToLTList(title, cover_image, url, style, index) {
     const tltListCopy = [...tltList];
     tltListCopy.splice(index, 1);
     setTLTlist(tltListCopy);
     const ltListCopy = [...ltList];
-    const releaseToAdd = { title: title, thumb: thumb, url: url, style: style };
+    const releaseToAdd = {
+      title: title,
+      cover_image: cover_image,
+      url: url,
+      style: style,
+    };
     ltListCopy.unshift(releaseToAdd);
     setLTList(ltListCopy);
   }
@@ -192,7 +202,11 @@ function App() {
   if (ltList.length > 0) {
     exploreListForDashboard = dataForDashboardExplore.map((release, index) => (
       <li key={index}>
-        <img src={release.thumb} alt="thumbnail" />
+        <img
+          className="dashboard-image"
+          src={release.cover_image}
+          alt="cover_image"
+        />
         {release.title}
       </li>
     ));
@@ -229,7 +243,7 @@ function App() {
 
   const displaySearchResults = dataFromSearch.map((result, index) => (
     <li key={index}>
-      <img src={result.thumb} alt="thumbnail" />
+      <img src={result.cover_image} alt="cover_image" />
       {result.title}
       <ul>
         <li>Label: {result.label[0]}</li>
@@ -248,7 +262,7 @@ function App() {
         onClick={() =>
           addToTLTList(
             result.title,
-            result.thumb,
+            result.cover_image,
             result.resource_url,
             result.style
           )
@@ -261,79 +275,35 @@ function App() {
 
   const displayTLTList = tltList.map((release, index) => (
     <li key={index}>
-      <div className="row align-items-center">
-        <img className="col-4" src={release.thumb} alt="thumbnail" />
-        <div className="col-7">{release.title}</div>
-      </div>
-      <div className="row align-items-center">
-        <div className="col-6">
-          <button
-            type="button"
-            className="btn btn-secondary text-nowrap btn-sm"
-            onClick={() => toggleTracklistDisplay(index)}
-          >
-            {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
-          </button>
-        </div>
-        <div className="col-6">
-          <button
-            type="button"
-            className="btn btn-secondary text-nowrap btn-sm"
-            onClick={() =>
-              addToLTList(
-                release.title,
-                release.thumb,
-                release.url,
-                release.style,
-                index
-              )
-            }
-          >
-            Listened To
-          </button>
-        </div>
-        <div className="accordion" id="tracklist">
-          <div className="accordion-item">
-            <h2 className="accordion-header" id={`tracklist-header-${index}`}>
-              <button
-                className="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target={`#collapse${index}`}
-                aria-expanded="false"
-                aria-controls={`collapse${index}`}
-              >
-                Display Tracklist
-              </button>
-            </h2>
-            <div
-              id={`collapse${index}`}
-              className="accordion-collapse collapse"
-              aria-labelledby={`tracklist-header-${index}`}
-              data-bs-parent="#tracklist"
-            >
-              <div className="accordion-body">
-                <ol>
-                  {release.tracklist?.map((track, index) => (
-                    <li key={index}>{track.title}</li>
-                  ))}
-                </ol>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* <ol className={displayIndex === index ? "active" : "inactive"}>
-          {release.tracklist?.map((track, index) => (
-            <li key={index}>{track.title}</li>
-          ))}
-        </ol> */}
-      </div>
+      <img src={release.thumb} alt="thumbnail" />
+      {release.title}
+      <button onClick={() => toggleTracklistDisplay(index)}>
+        {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
+      </button>
+      <ol className={displayIndex === index ? "active" : "inactive"}>
+        {release.tracklist?.map((track, index) => (
+          <li key={index}>{track.title}</li>
+        ))}
+      </ol>
+      <button
+        onClick={() =>
+          addToLTList(
+            release.title,
+            release.thumb,
+            release.url,
+            release.style,
+            index
+          )
+        }
+      >
+        Listened To
+      </button>
     </li>
   ));
 
   const displayLTList = ltList.map((release, index) => (
     <li key={index}>
-      <img src={release.thumb} alt="thumbnail" />
+      <img src={release.cover_image} alt="cover_image" />
       {release.title}
       <button onClick={() => toggleTracklistDisplay(index)}>
         {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
@@ -353,16 +323,199 @@ function App() {
     displayList = displayLTList;
   }
 
+  const displayDashboardTLTList = tltList.map((release, index) => (
+    <div
+      className="col"
+      key={index}
+      data-bs-toggle="modal"
+      data-bs-target={`#modal${index}`}
+    >
+      <div className="d-flex">
+        <img
+          className="dashboard-image"
+          src={release.cover_image}
+          alt="cover_image"
+        />
+        <div className="card sub-card">
+          <div className="card-body d-flex align-items-center">
+            <div className="card-text sub-card-title">{release.title}</div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade"
+        id={`modal${index}`}
+        tabIndex="-1"
+        aria-labelledby={`modal${index}Label`}
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              Mark "{release.title}" as Listened-To?
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-dark"
+                onClick={() =>
+                  addToLTList(
+                    release.title,
+                    release.cover_image,
+                    release.url,
+                    release.style,
+                    index
+                  )
+                }
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className="btn btn-dark"
+                data-bs-dismiss="modal"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  ));
+
+  {
+    /* <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={() => toggleTracklistDisplay(index)}
+          >
+            {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
+          </button> */
+  }
+  {
+    /* <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={() =>
+              addToLTList(
+                release.title,
+                release.cover_image,
+                release.url,
+                release.style,
+                index
+              )
+            }
+          >
+            Listened To
+          </button> */
+  }
+  {
+    /* <div className="accordion" id="tracklist">
+            <div className="accordion-item">
+              <h2 className="accordion-header" id={`tracklist-header-${index}`}>
+                <button
+                  className="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target={`#collapse${index}`}
+                  aria-expanded="false"
+                  aria-controls={`collapse${index}`}
+                >
+                  Display Tracklist
+                </button>
+              </h2>
+              <div
+                id={`collapse${index}`}
+                className="accordion-collapse collapse"
+                aria-labelledby={`tracklist-header-${index}`}
+                data-bs-parent="#tracklist"
+              >
+                <div className="accordion-body">
+                  <ol>
+                    {release.tracklist?.map((track, index) => (
+                      <li key={index}>{track.title}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div> */
+  }
+  {
+    /* <ol className={displayIndex === index ? "active" : "inactive"}>
+          {release.tracklist?.map((track, index) => (
+            <li key={index}>{track.title}</li>
+          ))}
+        </ol> */
+  }
+
+  const displayDashboardExplore = (
+    <>
+      <h6 className="card-title">More {ltList[0].style[0]}</h6>
+      <div className="list-group list-group-flush text-start">
+        <li className="list-group-item text-truncate dashboard-explore-list">
+          <img
+            className="dashboard-explore-image"
+            src={dataForDashboardExplore[0]?.cover_image}
+            alt="cover_image"
+          />
+          {dataForDashboardExplore[0]?.title}
+        </li>
+        <li className="list-group-item text-truncate dashboard-explore-list">
+          <img
+            className="dashboard-explore-image"
+            src={dataForDashboardExplore[1]?.cover_image}
+            alt="cover_image"
+          />
+          {dataForDashboardExplore[1]?.title}
+        </li>
+        <li className="list-group-item text-truncate dashboard-explore-list">
+          <img
+            className="dashboard-explore-image"
+            src={dataForDashboardExplore[2]?.cover_image}
+            alt="cover_image"
+          />
+          {dataForDashboardExplore[2]?.title}
+        </li>
+        <li className="list-group-item text-truncate dashboard-explore-list">
+          <img
+            className="dashboard-explore-image"
+            src={dataForDashboardExplore[3]?.cover_image}
+            alt="cover_image"
+          />
+          {dataForDashboardExplore[3]?.title}
+        </li>
+        <li className="list-group-item text-truncate dashboard-explore-list">
+          <img
+            className="dashboard-explore-image"
+            src={dataForDashboardExplore[4]?.cover_image}
+            alt="cover_image"
+          />
+          {dataForDashboardExplore[4]?.title}
+        </li>
+      </div>
+    </>
+  );
+
   return (
-    <div className="App">
+    <div className="App font-monospace">
       <Navbar setListDisplayToggle={setListDisplayToggle} />
       <Main
         searchQuery={searchQuery}
         dataForPagination={dataForPagination}
         displaySearchResults={displaySearchResults}
         displayList={displayList}
-        displayTLTList={displayTLTList}
-        exploreListForDashboard={exploreListForDashboard}
+        displayDashboardTLTList={displayDashboardTLTList}
+        displayDashboardExplore={displayDashboardExplore}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         handleNextPageFetch={handleNextPageFetch}
