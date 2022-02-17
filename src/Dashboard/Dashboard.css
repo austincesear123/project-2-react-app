@@ -2,6 +2,10 @@
   margin-bottom: 10px;
 }
 
+.card-title{
+  margin-bottom: 0;
+}
+
 .sub-card {
   width: 122.17px;
   height: 50px;
@@ -42,6 +46,10 @@
   margin-top: 5px;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   .card-body {
     padding: 0;
@@ -78,5 +86,33 @@
 
   .welcome-back {
     margin-top: none;
+  }
+}
+
+@media (min-width: 992px) {
+  .dashboard-container {
+    margin-top: 24.5px;
+  }
+
+  .dashboard-cards {
+    margin-bottom: 24px;
+  }
+
+  .tlt-card {
+    width: 80%;
+  }
+
+  .dashboard-image {
+    max-height: 50px;
+  }
+
+  .sub-card {
+    width: 80%;
+    height: 50px;
+  }
+
+  .dashboard-card-footer {
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
 }

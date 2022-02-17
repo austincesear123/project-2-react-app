@@ -325,7 +325,7 @@ function App() {
 
   const displayDashboardTLTList = tltList.map((release, index) => (
     <div
-      className="col"
+      className="col pointer"
       key={index}
       data-bs-toggle="modal"
       data-bs-target={`#modal${index}`}
