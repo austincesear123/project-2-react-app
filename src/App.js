@@ -330,14 +330,14 @@ function App() {
       data-bs-toggle="modal"
       data-bs-target={`#modal${index}`}
     >
-      <div className="d-flex">
+      <div className="d-flex align-items-center justify-content-center">
         <img
           className="dashboard-image"
           src={release.cover_image}
           alt="cover_image"
         />
         <div className="card sub-card">
-          <div className="card-body d-flex align-items-center">
+          <div className="card-body sub-card-body d-flex justify-content-center align-items-center">
             <div className="card-text sub-card-title">{release.title}</div>
           </div>
         </div>
@@ -402,23 +402,6 @@ function App() {
           </button> */
   }
   {
-    /* <button
-            type="button"
-            className="btn btn-secondary btn-sm"
-            onClick={() =>
-              addToLTList(
-                release.title,
-                release.cover_image,
-                release.url,
-                release.style,
-                index
-              )
-            }
-          >
-            Listened To
-          </button> */
-  }
-  {
     /* <div className="accordion" id="tracklist">
             <div className="accordion-item">
               <h2 className="accordion-header" id={`tracklist-header-${index}`}>
@@ -460,7 +443,7 @@ function App() {
 
   const displayDashboardExplore = (
     <>
-      <h6 className="card-title">More {ltList[0].style[0]}</h6>
+      <h5 className="card-title">More {ltList[0].style[0]}</h5>
       <div className="list-group list-group-flush text-start">
         <li className="list-group-item text-truncate dashboard-explore-list">
           <img
