@@ -46,13 +46,3 @@ const Navbar = ({ setListDisplayToggle }) => {
 };
 
 export default Navbar;
-
-{
-  /* <nav>
-  <Link to="/">Queue-Tip</Link>
-  <Link to="/explore">Explore</Link>
-  <Link to="/tlt-list" onClick={() => setListDisplayToggle("tlt")}>
-    T-L-T List
-  </Link>
-</nav>; */
-}
