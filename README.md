@@ -106,12 +106,27 @@ https://api.discogs.com/database/search?artist=the+beatles&release_title=revolve
 
 ## Additional Libraries
 
-probably Bootstrap
+Bootstrap
+
+## Sources
+
+- Ran into an error, googled it, and found the same one had been posted on stackoverflow. Ended up being super helpful for the rest of the project and wish I had known I could do that sooner: [link](https://stackoverflow.com/a/70009224)
+
+- This article was helpful in learning how to implement "text-overflow: ellipsis;" after a certain number of lines: [link](https://nikitahl.com/pure-css-truncate-text#2-truncating-text)
 
 ## Code Snippet
 
-Code snippet will go here.
+This function will run anytime the "Listened-To List" changes. It will check the genre of the most recent album you listened to, then search for other albums with that genre, and sets that data to a state to be displayed on the Dashboard page in the Explore card
 
-```
-
+```js
+  useEffect(() => {
+    if (ltList.length > 0) {
+      const style = ltList[0].style[0];
+      const url = `https://api.discogs.com/database/search?style=${style}&per_page=5&token=${discogsToken}`;
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => setDataForDashboardExplore(data.results))
+        .catch((error) => console.log(error));
+    }
+  }, [ltList]);
 ```

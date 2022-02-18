@@ -186,7 +186,7 @@ function App() {
         .then((data) => setDataForDashboardExplore(data.results))
         .catch((error) => console.log(error));
     }
-  }, [ltList[0]]);
+  }, [ltList]);
 
   const displaySearchResults = dataFromSearch.map((result, index) => (
     <li className="explore-result" key={index}>
