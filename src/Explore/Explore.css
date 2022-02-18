@@ -1,0 +1,56 @@
+.explore-results-list {
+  list-style-type: none;
+  padding: 0 15px;
+}
+
+.explore-cover-image {
+  height: 75px;
+  width: 75px;
+  margin-right: 5px;
+}
+
+.accordion-button {
+  padding: 0.25rem 1.25rem;
+}
+
+.tracklist-accordion-display {
+  display: none;
+}
+
+.explore-form {
+    margin: 15px 20px;
+}
+
+.explore-result {
+    margin-bottom: 15px;
+}
+
+@media (min-width: 768px) {
+  .tracklist-accordion-display {
+    display: block;
+  }
+
+  .more-info-display {
+    display: none;
+  }
+
+  .explore-form {
+      margin: 50px 70px;
+  }
+
+  #artistSearch, #albumSearch, #genreSearch {
+      margin-bottom: 7px;
+  }
+
+  .explore-cover-image {
+    height: 150px;
+    width: 150px;
+  }
+}
+
+@media (min-width: 992px){
+.explore-cover-image {
+        height: 200px;
+        width: 200px;
+      }
+}
