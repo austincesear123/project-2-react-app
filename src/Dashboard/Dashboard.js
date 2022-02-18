@@ -6,12 +6,6 @@ const Dashboard = ({
   displayDashboardExplore,
   handleExploreSeeMore,
 }) => {
-  // let slicedDisplayTLTList;
-  // if (displayTLTList.length > 5) {
-  //   slicedDisplayTLTList = displayTLTList.slice(0, 5);
-  // } else {
-  //   slicedDisplayTLTList = displayTLTList;
-  // }
   return (
     <div className="container dashboard-container">
       <div className="row row-cols-1 row-cols-md-2">

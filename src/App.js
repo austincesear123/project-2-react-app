@@ -1,5 +1,4 @@
 import "./App.css";
-// import { Route, Link, Routes, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import discogsToken from "./discogsToken";
 import Main from "./Main/Main";
@@ -16,7 +15,6 @@ function App() {
   const [dataForPagination, setDataForPagination] = useState({});
   const [tracklists, setTracklists] = useState([]);
   const [tracklistDisplayToggle, setTracklistDisplayToggle] = useState(false);
-  const [displayIndex, setDisplayIndex] = useState("");
 
   const [dataForDashboardExplore, setDataForDashboardExplore] = useState([]);
 
@@ -171,13 +169,11 @@ function App() {
     setLTList(ltListCopy);
   }
 
-  function toggleTracklistDisplay(index) {
+  function toggleTracklistDisplay() {
     if (tracklistDisplayToggle) {
       setTracklistDisplayToggle(false);
-      setDisplayIndex("");
     } else {
       setTracklistDisplayToggle(true);
-      setDisplayIndex(index);
     }
   }
 
@@ -191,20 +187,6 @@ function App() {
         .catch((error) => console.log(error));
     }
   }, [ltList[0]]);
-
-  // let exploreListForDashboard;
-  // if (ltList.length > 0) {
-  //   exploreListForDashboard = dataForDashboardExplore.map((release, index) => (
-  //     <li key={index}>
-  //       <img
-  //         className="dashboard-image"
-  //         src={release.cover_image}
-  //         alt="cover_image"
-  //       />
-  //       {release.title}
-  //     </li>
-  //   ));
-  // }
 
   const displaySearchResults = dataFromSearch.map((result, index) => (
     <li className="explore-result" key={index}>
@@ -227,7 +209,7 @@ function App() {
                   <button
                     className="accordion-button collapsed"
                     type="button"
-                    onClick={() => toggleTracklistDisplay(index)}
+                    onClick={() => toggleTracklistDisplay()}
                     data-bs-toggle="collapse"
                     data-bs-target={`#collapse${index}`}
                     aria-expanded="false"
@@ -276,7 +258,7 @@ function App() {
                   <button
                     className="accordion-button collapsed"
                     type="button"
-                    onClick={() => toggleTracklistDisplay(index)}
+                    onClick={() => toggleTracklistDisplay()}
                     data-bs-toggle="collapse"
                     data-bs-target={`#collapse${index}`}
                     aria-expanded="false"
@@ -336,7 +318,7 @@ function App() {
                 <button
                   className="accordion-button collapsed"
                   type="button"
-                  onClick={() => toggleTracklistDisplay(index)}
+                  onClick={() => toggleTracklistDisplay()}
                   data-bs-toggle="collapse"
                   data-bs-target={`#collapse${index}`}
                   aria-expanded="false"
@@ -396,7 +378,7 @@ function App() {
                 <button
                   className="accordion-button collapsed"
                   type="button"
-                  onClick={() => toggleTracklistDisplay(index)}
+                  onClick={() => toggleTracklistDisplay()}
                   data-bs-toggle="collapse"
                   data-bs-target={`#collapse${index}`}
                   aria-expanded="false"
