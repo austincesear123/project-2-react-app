@@ -2,8 +2,8 @@
 
 ## Project Links
 
-- [https://github.com/austincesear123/project-2-react-app](https://github.com/austincesear123/project-2-react-app)
-- [deployment link will go here]()
+- [Project Repo](https://github.com/austincesear123/project-2-react-app)
+- [Deployment Link](https://austincesear123.github.io/project-2-react-app/)
 
 ## Project Description
 
@@ -119,14 +119,14 @@ Bootstrap
 This function will run anytime the "Listened-To List" changes. It will check the genre of the most recent album you listened to, then search for other albums with that genre, and sets that data to a state to be displayed on the Dashboard page in the Explore card
 
 ```js
-  useEffect(() => {
-    if (ltList.length > 0) {
-      const style = ltList[0].style[0];
-      const url = `https://api.discogs.com/database/search?style=${style}&per_page=5&token=${discogsToken}`;
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => setDataForDashboardExplore(data.results))
-        .catch((error) => console.log(error));
-    }
-  }, [ltList]);
+useEffect(() => {
+  if (ltList.length > 0) {
+    const style = ltList[0].style[0];
+    const url = `https://api.discogs.com/database/search?style=${style}&per_page=5&token=${discogsToken}`;
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => setDataForDashboardExplore(data.results))
+      .catch((error) => console.log(error));
+  }
+}, [ltList]);
 ```
