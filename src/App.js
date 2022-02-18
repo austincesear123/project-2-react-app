@@ -218,7 +218,7 @@ function App() {
           {result.title}
 
           <div className="more-info-display">
-            <div className="accordion" id="tracklist">
+            <div className="accordion" id={`tracklist${index}`}>
               <div className="accordion-item">
                 <h2
                   className="accordion-header"
@@ -240,7 +240,7 @@ function App() {
                   id={`collapse${index}`}
                   className="accordion-collapse collapse"
                   aria-labelledby={`tracklist-header-${index}`}
-                  data-bs-parent="#tracklist"
+                  data-bs-parent={`#tracklist${index}`}
                 >
                   <div className="accordion-body">
                     <ul>
@@ -267,7 +267,7 @@ function App() {
               <li>Year: {result.year}</li>
               <li>Style: {result.style[0]}</li>
             </ul>
-            <div className="accordion" id="tracklist">
+            <div className="accordion" id={`tracklist${index}`}>
               <div className="accordion-item">
                 <h2
                   className="accordion-header"
@@ -289,7 +289,7 @@ function App() {
                   id={`collapse${index}`}
                   className="accordion-collapse collapse"
                   aria-labelledby={`tracklist-header-${index}`}
-                  data-bs-parent="#tracklist"
+                  data-bs-parent={`#tracklist${index}`}
                 >
                   <div className="accordion-body">
                     <ol>
@@ -321,45 +321,122 @@ function App() {
   ));
 
   const displayTLTList = tltList.map((release, index) => (
-    <li key={index}>
-      <img src={release.thumb} alt="thumbnail" />
-      {release.title}
-      <button onClick={() => toggleTracklistDisplay(index)}>
-        {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
-      </button>
-      <ol className={displayIndex === index ? "active" : "inactive"}>
-        {release.tracklist?.map((track, index) => (
-          <li key={index}>{track.title}</li>
-        ))}
-      </ol>
-      <button
-        onClick={() =>
-          addToLTList(
-            release.title,
-            release.thumb,
-            release.url,
-            release.style,
-            index
-          )
-        }
-      >
-        Listened To
-      </button>
+    <li className="tlt-result" key={index}>
+      <div className="d-flex">
+        <img
+          className="tlt-cover-image"
+          src={release.cover_image}
+          alt="thumbnail"
+        />
+        <div className="flex-fill">
+          {release.title}
+          <div className="accordion" id={`tracklist${index}`}>
+            <div className="accordion-item">
+              <h2 className="accordion-header" id={`tracklist-header-${index}`}>
+                <button
+                  className="accordion-button collapsed"
+                  type="button"
+                  onClick={() => toggleTracklistDisplay(index)}
+                  data-bs-toggle="collapse"
+                  data-bs-target={`#collapse${index}`}
+                  aria-expanded="false"
+                  aria-controls={`collapse${index}`}
+                >
+                  Display Tracklist
+                </button>
+              </h2>
+              <div
+                id={`collapse${index}`}
+                className="accordion-collapse collapse"
+                aria-labelledby={`tracklist-header-${index}`}
+                data-bs-parent={`#tracklist${index}`}
+              >
+                <div className="accordion-body">
+                  <ol>
+                    {release.tracklist?.map((track, index) => (
+                      <li key={index}>{track.title}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            className="btn btn-sm btn-dark"
+            onClick={() =>
+              addToLTList(
+                release.title,
+                release.cover_image,
+                release.url,
+                release.style,
+                index
+              )
+            }
+          >
+            Listened To
+          </button>
+        </div>
+      </div>
     </li>
   ));
 
   const displayLTList = ltList.map((release, index) => (
-    <li key={index}>
-      <img src={release.cover_image} alt="cover_image" />
-      {release.title}
-      <button onClick={() => toggleTracklistDisplay(index)}>
-        {displayIndex === index ? "Hide Tracklist" : "Display Tracklist"}
-      </button>
-      <ol className={displayIndex === index ? "active" : "inactive"}>
-        {release.tracklist?.map((track, index) => (
-          <li key={index}>{track.title}</li>
-        ))}
-      </ol>
+    <li className="tlt-result" key={index}>
+      <div className="d-flex">
+        <img
+          className="tlt-cover-image"
+          src={release.cover_image}
+          alt="thumbnail"
+        />
+        <div className="flex-fill">
+          {release.title}
+          <div className="accordion" id={`tracklist${index}`}>
+            <div className="accordion-item">
+              <h2 className="accordion-header" id={`tracklist-header-${index}`}>
+                <button
+                  className="accordion-button collapsed"
+                  type="button"
+                  onClick={() => toggleTracklistDisplay(index)}
+                  data-bs-toggle="collapse"
+                  data-bs-target={`#collapse${index}`}
+                  aria-expanded="false"
+                  aria-controls={`collapse${index}`}
+                >
+                  Display Tracklist
+                </button>
+              </h2>
+              <div
+                id={`collapse${index}`}
+                className="accordion-collapse collapse"
+                aria-labelledby={`tracklist-header-${index}`}
+                data-bs-parent={`#tracklist${index}`}
+              >
+                <div className="accordion-body">
+                  <ol>
+                    {release.tracklist?.map((track, index) => (
+                      <li key={index}>{track.title}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            className="btn btn-sm btn-dark"
+            onClick={() =>
+              addToLTList(
+                release.title,
+                release.cover_image,
+                release.url,
+                release.style,
+                index
+              )
+            }
+          >
+            Listened To
+          </button>
+        </div>
+      </div>
     </li>
   ));
 
@@ -497,6 +574,7 @@ function App() {
         displayList={displayList}
         displayDashboardTLTList={displayDashboardTLTList}
         displayDashboardExplore={displayDashboardExplore}
+        listDisplayToggle={listDisplayToggle}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         handleNextPageFetch={handleNextPageFetch}

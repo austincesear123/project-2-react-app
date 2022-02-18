@@ -10,6 +10,7 @@ const Main = ({
   displayList,
   displayDashboardTLTList,
   displayDashboardExplore,
+  listDisplayToggle,
   handleChange,
   handleSubmit,
   handleNextPageFetch,
@@ -41,6 +42,7 @@ const Main = ({
           element={
             <TLTList
               displayList={displayList}
+              listDisplayToggle={listDisplayToggle}
               setListDisplayToggle={setListDisplayToggle}
             />
           }

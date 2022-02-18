@@ -1,0 +1,48 @@
+.tlt-list {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  list-style-type: none;
+  padding: 15px 15px;
+  margin: 0 15px;
+}
+
+.tlt-cover-image {
+  height: 75px;
+  width: 75px;
+  margin-right: 5px;
+}
+
+.accordion-button {
+  padding: 0.25rem 1.25rem;
+}
+
+.tlt-result {
+  margin-bottom: 15px;
+}
+
+.list-selector {
+  margin: 0 80px 20px 80px;
+}
+
+.tlt-header {
+  margin-top: 10px;
+}
+
+@media (min-width: 768px) {
+  .tlt-list {
+    padding: 40px;
+    margin: 0 40px;
+  }
+  .list-selector {
+    margin: 0 200px 40px 200px;
+  }
+
+  .tlt-header {
+    margin-top: 20px;
+  }
+
+  .tlt-cover-image {
+    height: 150px;
+    width: 150px;
+  }
+}

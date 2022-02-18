@@ -65,7 +65,7 @@ const Explore = ({
           </div>
         </form>
       <div className="d-flex justify-content-center">
-        <ul className="explore-results-list">{displaySearchResults}</ul>
+        <ul className={displaySearchResults.length === 0 ? "explore-results-list-inactive" : "explore-results-list"}>{displaySearchResults}</ul>
       </div>
       <div className="text-center">{nextAndLastPageButtons}</div>
     </>
