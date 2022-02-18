@@ -403,20 +403,6 @@ function App() {
               </div>
             </div>
           </div>
-          <button
-            className="btn btn-sm btn-dark"
-            onClick={() =>
-              addToLTList(
-                release.title,
-                release.cover_image,
-                release.url,
-                release.style,
-                index
-              )
-            }
-          >
-            Listened To
-          </button>
         </div>
       </div>
     </li>
