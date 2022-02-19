@@ -36,15 +36,18 @@ function App() {
     if (obj.artist !== "") {
       if (obj.album !== "") {
         if (obj.genre !== "") {
-          return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&genre=${obj.genre}&type=master&per_page=20&token=${discogsToken}`;
+          return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&style=${obj.genre}&type=master&per_page=20&token=${discogsToken}`;
+        } else {
+          return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&type=master&per_page=20&token=${discogsToken}`;
         }
+      } else if (obj.genre !== "") {
+        return `https://api.discogs.com/database/search?artist=${obj.artist}&style=${obj.genre}&type=master&token=${discogsToken}`;
       } else {
-        return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&type=master&per_page=20&token=${discogsToken}`;
+        return `https://api.discogs.com/database/search?artist=${obj.artist}&type=master&token=${discogsToken}`;
       }
-      return `https://api.discogs.com/database/search?artist=${obj.artist}&type=master&token=${discogsToken}`;
     } else if (obj.album !== "") {
       if (obj.genre !== "") {
-        return `https://api.discogs.com/database/search?release_title=${obj.album}&genre=${obj.genre}&type=master&per_page=20&token=${discogsToken}`;
+        return `https://api.discogs.com/database/search?release_title=${obj.album}&style=${obj.genre}&type=master&per_page=20&token=${discogsToken}`;
       }
       return `https://api.discogs.com/database/search?release_title=${obj.album}&type=master&per_page=20&token=${discogsToken}`;
     } else if (obj.genre !== "") {
@@ -55,33 +58,33 @@ function App() {
   function handleSubmit(event) {
     event.preventDefault();
     const tracklistsCopy = [];
-
-    fetch(determineSearchURL(searchQuery))
-      .then((response) => response.json())
-      .then((data) => {
-        setDataFromSearch(data.results);
-        setDataForPagination(data.pagination);
-        return data;
-      })
-      .then((data) => {
-        data.results.forEach((result) => {
-          fetch(`${result.resource_url}?token=${discogsToken}`)
-            .then((response) => response.json())
-            .then((data) => {
-              tracklistsCopy.push(data.tracklist);
-            })
-            .catch((error) => console.log(error));
-        });
-      })
-      .then(() => setTracklists(tracklistsCopy))
-      .then(() =>
-        setSearchQuery({
-          artist: "",
-          album: "",
-          genre: "",
-        })
-      )
-      .catch((error) => console.log(error));
+    console.log(determineSearchURL(searchQuery));
+    // fetch(determineSearchURL(searchQuery))
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     setDataFromSearch(data.results);
+    //     setDataForPagination(data.pagination);
+    //     // return data;
+    //   })
+    //   // .then((data) => {
+    //   //   data.results.forEach((result) => {
+    //   //     fetch(`${result.resource_url}?token=${discogsToken}`)
+    //   //       .then((response) => response.json())
+    //   //       .then((data) => {
+    //   //         tracklistsCopy.push(data.tracklist);
+    //   //       })
+    //   //       .catch((error) => console.log(error));
+    //   //   });
+    //   // })
+    //   .then(() => setTracklists(tracklistsCopy))
+    //   .then(() =>
+    //     setSearchQuery({
+    //       artist: "",
+    //       album: "",
+    //       genre: "",
+    //     })
+    //   )
+    //   .catch((error) => console.log(error));
   }
 
   function handleExploreSeeMore() {
