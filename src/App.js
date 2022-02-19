@@ -13,7 +13,6 @@ function App() {
   });
   const [dataFromSearch, setDataFromSearch] = useState([]);
   const [dataForPagination, setDataForPagination] = useState({});
-  const [tracklists, setTracklists] = useState([]);
   const [tracklistDisplayToggle, setTracklistDisplayToggle] = useState(false);
 
   const [dataForDashboardExplore, setDataForDashboardExplore] = useState([]);
@@ -41,9 +40,9 @@ function App() {
           return `https://api.discogs.com/database/search?artist=${obj.artist}&release_title=${obj.album}&type=master&per_page=20&token=${discogsToken}`;
         }
       } else if (obj.genre !== "") {
-        return `https://api.discogs.com/database/search?artist=${obj.artist}&style=${obj.genre}&type=master&token=${discogsToken}`;
+        return `https://api.discogs.com/database/search?artist=${obj.artist}&style=${obj.genre}&type=master&per_page=20&token=${discogsToken}`;
       } else {
-        return `https://api.discogs.com/database/search?artist=${obj.artist}&type=master&token=${discogsToken}`;
+        return `https://api.discogs.com/database/search?artist=${obj.artist}&type=master&per_page=20&token=${discogsToken}`;
       }
     } else if (obj.album !== "") {
       if (obj.genre !== "") {
@@ -57,59 +56,62 @@ function App() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    const tracklistsCopy = [];
-    console.log(determineSearchURL(searchQuery));
-    // fetch(determineSearchURL(searchQuery))
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     setDataFromSearch(data.results);
-    //     setDataForPagination(data.pagination);
-    //     // return data;
-    //   })
-    //   // .then((data) => {
-    //   //   data.results.forEach((result) => {
-    //   //     fetch(`${result.resource_url}?token=${discogsToken}`)
-    //   //       .then((response) => response.json())
-    //   //       .then((data) => {
-    //   //         tracklistsCopy.push(data.tracklist);
-    //   //       })
-    //   //       .catch((error) => console.log(error));
-    //   //   });
-    //   // })
-    //   .then(() => setTracklists(tracklistsCopy))
-    //   .then(() =>
-    //     setSearchQuery({
-    //       artist: "",
-    //       album: "",
-    //       genre: "",
-    //     })
-    //   )
-    //   .catch((error) => console.log(error));
+
+    fetch(determineSearchURL(searchQuery))
+      .then((response) => response.json())
+      .then(async (data) => {
+        await Promise.all(
+          data.results.map((result, index, array) => {
+            return fetch(`${result.resource_url}?token=${discogsToken}`)
+              .then((response) => response.json())
+              .then((data) => {
+                let tracklist = data.tracklist;
+                array[index] = { ...result, tracklist };
+              })
+              .catch((error) => console.log(error));
+          })
+        );
+        return data;
+      })
+      .then((data) => {
+        setDataFromSearch(data.results);
+        setDataForPagination(data.pagination);
+      })
+      .then(() =>
+        setSearchQuery({
+          artist: "",
+          album: "",
+          genre: "",
+        })
+      )
+      .catch((error) => console.log(error));
   }
 
   function handleExploreSeeMore() {
     const style = ltList[0].style[0];
     const url = `https://api.discogs.com/database/search?style=${style}&per_page=20&token=${discogsToken}`;
-    const tracklistsCopy = [];
 
     fetch(url)
       .then((response) => response.json())
+      .then(async (data) => {
+        await Promise.all(
+          data.results.map((result, index, array) => {
+            return fetch(`${result.resource_url}?token=${discogsToken}`)
+              .then((response) => response.json())
+              .then((data) => {
+                let tracklist = data.tracklist;
+                array[index] = { ...result, tracklist };
+              })
+              .catch((error) => console.log(error));
+          })
+        );
+        return data;
+      })
       .then((data) => {
         setDataFromSearch(data.results);
         setDataForPagination(data.pagination);
         return data;
       })
-      .then((data) => {
-        data.results.forEach((e) => {
-          fetch(`${e.resource_url}?token=${discogsToken}`)
-            .then((response) => response.json())
-            .then((data) => {
-              tracklistsCopy.push(data.tracklist);
-            })
-            .catch((error) => console.log(error));
-        });
-      })
-      .then(() => setTracklists(tracklistsCopy))
       .then(() =>
         setSearchQuery({
           artist: "",
@@ -124,6 +126,20 @@ function App() {
     const url = dataForPagination.urls.next;
     fetch(url)
       .then((response) => response.json())
+      .then(async (data) => {
+        await Promise.all(
+          data.results.map((result, index, array) => {
+            return fetch(`${result.resource_url}?token=${discogsToken}`)
+              .then((response) => response.json())
+              .then((data) => {
+                let tracklist = data.tracklist;
+                array[index] = { ...result, tracklist };
+              })
+              .catch((error) => console.log(error));
+          })
+        );
+        return data;
+      })
       .then((data) => {
         setDataFromSearch(data.results);
         setDataForPagination(data.pagination);
@@ -136,6 +152,20 @@ function App() {
     const url = dataForPagination.urls.prev;
     fetch(url)
       .then((response) => response.json())
+      .then(async (data) => {
+        await Promise.all(
+          data.results.map((result, index, array) => {
+            return fetch(`${result.resource_url}?token=${discogsToken}`)
+              .then((response) => response.json())
+              .then((data) => {
+                let tracklist = data.tracklist;
+                array[index] = { ...result, tracklist };
+              })
+              .catch((error) => console.log(error));
+          })
+        );
+        return data;
+      })
       .then((data) => {
         setDataFromSearch(data.results);
         setDataForPagination(data.pagination);
@@ -235,7 +265,7 @@ function App() {
                     </ul>
                     <hr />
                     <ol>
-                      {tracklists[index]?.map((track, index) => {
+                      {result.tracklist?.map((track, index) => {
                         return track.type_ === "track" ? (
                           <li key={index}>{track.title}</li>
                         ) : null;
@@ -278,7 +308,7 @@ function App() {
                 >
                   <div className="accordion-body">
                     <ol>
-                      {tracklists[index]?.map((track, index) => (
+                      {result.tracklist?.map((track, index) => (
                         <li key={index}>{track.title}</li>
                       ))}
                     </ol>
