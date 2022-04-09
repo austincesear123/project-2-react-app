@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import discogsToken from "./discogsToken";
 import Main from "./Main/Main";
 import Navbar from "./Navbar/Navbar";
-import { initialTLTList, initialLTList } from "./initialData";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState({
@@ -17,9 +16,53 @@ function App() {
 
   const [dataForDashboardExplore, setDataForDashboardExplore] = useState([]);
 
-  const [tltList, setTLTlist] = useState(initialTLTList);
-  const [ltList, setLTList] = useState(initialLTList);
+  const [tltList, setTLTlist] = useState([]);
+  const [ltList, setLTList] = useState([]);
   const [listDisplayToggle, setListDisplayToggle] = useState("tlt");
+
+  useEffect(() => {
+    fetch(`https://api.discogs.com/database/search?style=electro&type=master&per_page=10&token=${discogsToken}`)
+    .then((response) => response.json())
+    .then(async (data) => {
+      await Promise.all(
+        data.results.map((result, index, array) => {
+          return fetch(`${result.resource_url}?token=${discogsToken}`)
+            .then((response) => response.json())
+            .then((data) => {
+              let tracklist = data.tracklist;
+              array[index] = { ...result, tracklist };
+            })
+            .catch((error) => console.log(error));
+        })
+      );
+      return data;
+    })
+    .then((data) => {
+      setTLTlist(data.results);
+    })
+    .catch((error) => console.log(error));
+
+    fetch(`https://api.discogs.com/database/search?style=techno&type=master&per_page=5&token=${discogsToken}`)
+    .then((response) => response.json())
+    .then(async (data) => {
+      await Promise.all(
+        data.results.map((result, index, array) => {
+          return fetch(`${result.resource_url}?token=${discogsToken}`)
+            .then((response) => response.json())
+            .then((data) => {
+              let tracklist = data.tracklist;
+              array[index] = { ...result, tracklist };
+            })
+            .catch((error) => console.log(error));
+        })
+      );
+      return data;
+    })
+    .then((data) => {
+      setLTList(data.results);
+    })
+    .catch((error) => console.log(error));
+  }, [])
 
   function handleChange(event) {
     if (event.target.id === "artistSearch") {
