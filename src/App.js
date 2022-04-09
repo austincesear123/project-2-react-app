@@ -562,7 +562,7 @@ function App() {
 
   const displayDashboardExplore = (
     <>
-      <h5 className="card-title">More {ltList[0].style[0]}</h5>
+      <h5 className="card-title">More {ltList.length > 0 ? ltList[0].style[0] : ""}</h5>
       <div className="list-group list-group-flush text-start">
         <li className="list-group-item text-truncate dashboard-explore-list">
           <img
